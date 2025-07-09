@@ -67,16 +67,16 @@ python main.py
 ## Screenshots
 
 #### Main Menu
-![Main Menu](screenshots\main_menu.png)
+![Main Menu](screenshots/main_menu.png)
 
 #### Kitchen Tab
-![Kitchen Tab](screenshots\kitchen_tab.png)
+![Kitchen Tab](screenshots/kitchen_tab.png)
 
 #### Home Tab
-![Home Tab](screenshots\home_tab.png)
+![Home Tab](screenshots/home_tab.png)
 
 #### Log Tab
-![Log Tab](screenshots\log_tab.png)
+![Log Tab](screenshots/log_tab.png)
 
 ## Roadmap
 
