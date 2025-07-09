@@ -9,16 +9,7 @@ from engine.config import *
 from engine.game_state import state
 from engine.timekeeper import get_time_string, get_date_string
 from engine.room_manager import get_buttons, get_info_panel
-
-# --- UI Button Structure ---
-
-@dataclass
-class UIButton:
-    label: str
-    type: str  # "action" or "toggle"
-    enabled: Callable[[], bool]
-    get: Callable[[], bool]
-    action: Callable[[], None]
+from engine.ui_components import UIButton
 
 # --- Font and Layout ---
 
@@ -272,16 +263,39 @@ def draw_main_menu(screen):
 def draw_key_hints(screen):
     y = SCREEN_HEIGHT - 55
     lines = [
-        ["[←↑↓→] Move", "[ENTER] Select"],
-        ["[Z] Switch Tab", "[SPACE] Info Page"]
+        ["[WASD / Arrows] Move", "[ENTER] Select"],
+        ["[TAB / Shift+TAB] Switch Tab", "[Q / E] Info Page"]
     ]
+    padding = 300
     for row_i, row in enumerate(lines):
         x = 20
         for hint in row:
             draw_text(screen, hint, x, y + row_i * 18, (100, 100, 100))
-            x += 180
+            x += padding
 
 # --- Utility ---
 
 def current_tab():
     return TABS[state.tab_index]
+
+def draw_modal(screen):
+    if not state.modal.visible:
+        return
+
+    width, height = 480, 160
+    x = (SCREEN_WIDTH - width) // 2
+    y = (SCREEN_HEIGHT - height) // 2
+
+    # Background + border
+    pygame.draw.rect(screen, (30, 30, 50), (x, y, width, height))
+    pygame.draw.rect(screen, SECTION_BORDER_COLOR, (x, y, width, height), 2)
+
+    # Message text
+    lines = state.modal.message.splitlines()
+    for i, line in enumerate(lines):
+        draw_centered(screen, line, y + 40 + i * 24, color=(220, 220, 220))
+
+    # Dismiss hint
+    draw_centered(screen, "[Press ENTER to continue]", y + height - 30, color=(140, 140, 140))
+
+

@@ -3,63 +3,9 @@
 
 from engine.game_state import state
 from engine.utils import log
-from engine.ui_components import UIButton
+from engine.ui_components import UIButton, show_modal
 
 # --- Action Helpers ---
-
-def toggle_light():
-    state.lights.kitchen = not state.lights.kitchen
-    log("Toggled kitchen light", level="info")
-
-def try_cook():
-    if state.resources.food_count > 0:
-        state.resources.food_count -= 1
-        state.resources.cooked_count += 1
-        state.resources.trash_level = min(state.resources.trash_level + 10, state.resources.trash_max)
-        state.resources.dish_count += 1
-        log("Cooked food", level="info")
-        return True
-    else:
-        log("Tried to cook, but no food available.", level="info")
-        return False
-
-def try_eat():
-    if state.resources.cooked_count > 0:
-        state.resources.cooked_count -= 1
-        state.needs.hunger = 0
-        log("Ate food", level="info")
-        return True
-    else:
-        log("Tried to eat, but no cooked food.", level="info")
-        return False
-
-def try_drink():
-    if state.resources.water_count > 0:
-        state.resources.water_count -= 1
-        state.needs.thirst = 0
-        log("Drank water", level="info")
-        return True
-    else:
-        log("Tried to drink, but no water.", level="info")
-        return False
-
-def try_empty_trash():
-    if state.resources.trash_level > 0:
-        state.resources.trash_level = 0
-        log("Emptied trash", level="info")
-        return True
-    else:
-        log("Trash already empty.", level="info")
-        return False
-
-def try_wash_dishes():
-    if state.resources.dish_count > 0:
-        state.resources.dish_count = 0
-        log("Washed dishes", level="info")
-        return True
-    else:
-        log("No dishes to wash.", level="info")
-        return False
 
 def set_ac_mode(mode):
     if state.env.ac_mode != mode:
@@ -67,10 +13,29 @@ def set_ac_mode(mode):
         if mode == "off":
             state.env.ac_state = "off"
 
+def try_order_food():
+    cost = 10
+    if state.resources.money >= cost:
+        state.resources.money -= cost
+        state.resources.ingredients += 10
+        log("Ordered food delivery (10 ingredients)", level="info")
+        return True
+    else:
+        show_modal("Not enough money to order food.")
+        log("Tried to order food, but not enough money.", level="info")
+        return False
+
 # --- Button Definitions ---
 
 def get_buttons():
     return [
+        UIButton(
+            label="Order Food",
+            type="action",
+            enabled=lambda: state.resources.money >= 10,
+            get=lambda: False,
+            action=try_order_food
+        ),
         UIButton(
             label="A/C: Off",
             type="action",

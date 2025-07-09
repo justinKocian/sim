@@ -2,7 +2,7 @@
 # Refactored to use dataclasses for structured game state management
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Callable
 
 @dataclass
 class Environment:
@@ -16,16 +16,18 @@ class Environment:
 class Needs:
     hunger: int = 10
     thirst: int = 10
-    energy_level: int = 0
+    fatigue: int = 0
 
 @dataclass
 class Resources:
     food_count: int = 10
-    cooked_count: int = 0
     water_count: int = 2
     dish_count: int = 0
+    dish_max: int = 100
     trash_level: int = 0
     trash_max: int = 100
+    ingredients: int = 5
+    money: int = 100
 
 @dataclass
 class Lights:
@@ -64,11 +66,18 @@ class TimeState:
     time_accumulator: float = 0.0
 
 @dataclass
+class ModalState:
+    visible: bool = False
+    message: str = ""
+    on_dismiss: Callable[[], None] = lambda: None
+
+@dataclass
 class GameState:
     game_started: bool = False
     tab_index: int = 0
     sel_index: int = 0
     needs_redraw: bool = True
+    modal: ModalState = field(default_factory=ModalState)
     
     env: Environment = field(default_factory=Environment)
     resources: Resources = field(default_factory=Resources)

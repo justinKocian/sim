@@ -14,7 +14,8 @@ from engine.ui import (
     draw_tabs,
     draw_borders,
     draw_key_hints,
-    draw_time_panel
+    draw_time_panel,
+    draw_modal
 )
 from engine.timekeeper import advance_time
 from engine.scheduler import setup_events, check_events
@@ -45,38 +46,58 @@ def current_tab():
 def handle_game_input(event):
     """
     Handles key input during active gameplay.
-    Manages navigation, action triggers, tab switching, and info paging.
+    If a modal is visible, only handles ENTER to dismiss it.
+    Otherwise, handles navigation, tab switching, and actions.
     """
+    if state.modal.visible:
+        if event.key == pygame.K_RETURN:
+            state.modal.visible = False
+            state.modal.on_dismiss()
+        return
+
     state.needs_redraw = True
     buttons = get_buttons(current_tab())
 
-    if event.key == pygame.K_LEFT:
+    # Navigation (arrow keys or WASD)
+    if event.key in (pygame.K_LEFT, pygame.K_a):
         state.sel_index = (state.sel_index - 1) % len(buttons)
 
-    elif event.key == pygame.K_RIGHT:
+    elif event.key in (pygame.K_RIGHT, pygame.K_d):
         state.sel_index = (state.sel_index + 1) % len(buttons)
 
-    elif event.key == pygame.K_UP:
+    elif event.key in (pygame.K_UP, pygame.K_w):
         state.sel_index = (state.sel_index - COLS) % len(buttons)
 
-    elif event.key == pygame.K_DOWN:
+    elif event.key in (pygame.K_DOWN, pygame.K_s):
         state.sel_index = (state.sel_index + COLS) % len(buttons)
 
+    # Confirm / activate
     elif event.key == pygame.K_RETURN:
         if buttons:
             btn = buttons[state.sel_index]
             if btn.enabled():
                 btn.action()
 
-    elif event.key == pygame.K_z:
-        state.tab_index = (state.tab_index + 1) % len(TABS)
+    # Tab navigation (TAB forward, SHIFT+TAB back)
+    elif event.key == pygame.K_TAB:
+        if pygame.key.get_mods() & pygame.KMOD_SHIFT:
+            state.tab_index = (state.tab_index - 1) % len(TABS)
+        else:
+            state.tab_index = (state.tab_index + 1) % len(TABS)
         state.sel_index = 0
 
-    elif event.key == pygame.K_SPACE:
+    # Info page cycling (Q = prev, E = next)
+    elif event.key == pygame.K_q or event.key == pygame.K_PAGEUP:
         tab = current_tab()
-        info = get_info_panel(tab)
-        total_pages = max(1, (len(info) + INFO_LINES_PER_PAGE - 1) // INFO_LINES_PER_PAGE)
-        state.info_page.pages[tab] = (state.info_page.pages.get(tab, 0) + 1) % total_pages
+        current = state.info_page.pages.get(tab, 0)
+        total = max(1, (len(get_info_panel(tab)) + INFO_LINES_PER_PAGE - 1) // INFO_LINES_PER_PAGE)
+        state.info_page.pages[tab] = (current - 1) % total
+
+    elif event.key == pygame.K_e or event.key == pygame.K_PAGEDOWN:
+        tab = current_tab()
+        current = state.info_page.pages.get(tab, 0)
+        total = max(1, (len(get_info_panel(tab)) + INFO_LINES_PER_PAGE - 1) // INFO_LINES_PER_PAGE)
+        state.info_page.pages[tab] = (current + 1) % total
 
 def main():
     global tick_accumulator
@@ -127,6 +148,7 @@ def main():
             draw_button_grid(screen)
             draw_info_panel(screen)
             draw_key_hints(screen)
+            draw_modal(screen)
             pygame.display.flip()
             state.needs_redraw = False
 

@@ -3,7 +3,7 @@
 
 from engine.game_state import state
 from engine.utils import log
-from engine.ui_components import UIButton
+from engine.ui_components import UIButton, show_modal
 
 # --- Action Helpers ---
 
@@ -12,25 +12,55 @@ def toggle_light():
     log("Toggled kitchen light", level="info")
 
 def try_cook():
-    if state.resources.food_count > 0:
-        state.resources.food_count -= 1
-        state.resources.cooked_count += 1
-        state.resources.trash_level = min(state.resources.trash_level + 10, state.resources.trash_max)
-        state.resources.dish_count += 1
+    if state.resources.trash_level >= state.resources.trash_max:
+        show_modal("The trash is full! Empty it before cooking.")
+        log("Tried to cook, but trash is full.", level="info")
+        return False
+    if (state.resources.dish_count / state.resources.dish_max) >= 1.0:
+        show_modal("The sink is full of dirty dishes! Wash them first.")
+        log("Tried to cook, but the sink is full.", level="info")
+        return False
+    if state.resources.ingredients > 0:
+        state.resources.ingredients -= 1
+        state.resources.food_count += 1
+        state.resources.trash_level = min(
+            state.resources.trash_level + 5, state.resources.trash_max
+        )
+        state.resources.dish_count = min(
+            state.resources.dish_count + int(state.resources.dish_max * 0.05),  # +5% of max
+            state.resources.dish_max
+        )
         log("Cooked food", level="info")
         return True
     else:
-        log("Tried to cook, but no food available.", level="info")
+        show_modal("You don't have any ingredients to cook.")
+        log("Tried to cook, but no ingredients available.", level="info")
         return False
 
 def try_eat():
-    if state.resources.cooked_count > 0:
-        state.resources.cooked_count -= 1
-        state.needs.hunger = 0
+    if state.resources.trash_level >= state.resources.trash_max:
+        show_modal("The trash is full! Empty it before eating.")
+        log("Tried to eat, but trash is full.", level="info")
+        return False
+    if (state.resources.dish_count / state.resources.dish_max) >= 1.0:
+        show_modal("The sink is full of dirty dishes!\nWash them first.")
+        log("Tried to eat, but the sink is full.", level="info")
+        return False
+    if state.resources.food_count > 0:
+        state.resources.food_count -= 1
+        state.resources.trash_level = min(
+            state.resources.trash_level + 10, state.resources.trash_max
+        )
+        state.resources.dish_count = min(
+            state.resources.dish_count + int(state.resources.dish_max * 0.10),  # +10% of max
+            state.resources.dish_max
+        )
+        state.needs.hunger = max(state.needs.hunger - 5, 0)
         log("Ate food", level="info")
         return True
     else:
-        log("Tried to eat, but no cooked food.", level="info")
+        show_modal("You're out of food to eat.")
+        log("Tried to eat, but no food available.", level="info")
         return False
 
 def try_drink():
@@ -112,28 +142,7 @@ def get_buttons():
             enabled=lambda: True,
             get=lambda: False,
             action=try_wash_dishes
-        ),
-        UIButton(
-            label="A/C: Off",
-            type="action",
-            enabled=lambda: state.env.ac_mode != "off",
-            get=lambda: state.env.ac_mode == "off",
-            action=lambda: set_ac_mode("off")
-        ),
-        UIButton(
-            label="A/C: On",
-            type="action",
-            enabled=lambda: state.env.ac_mode != "on",
-            get=lambda: state.env.ac_mode == "on",
-            action=lambda: set_ac_mode("on")
-        ),
-        UIButton(
-            label="A/C: Auto",
-            type="action",
-            enabled=lambda: state.env.ac_mode != "auto",
-            get=lambda: state.env.ac_mode == "auto",
-            action=lambda: set_ac_mode("auto")
-        ),
+        )
     ]
 
 # --- Info Panel ---
@@ -141,11 +150,8 @@ def get_buttons():
 def get_info():
     return [
         ("Light", "ON" if state.lights.kitchen else "OFF"),
-        ("Ingredients", "Available" if state.resources.food_count > 0 else "Missing"),
-        ("Food", str(state.resources.cooked_count)),
+        ("Ingredients", state.resources.ingredients),
+        ("Food", str(state.resources.food_count)),
         ("Trash", f'{int((state.resources.trash_level / state.resources.trash_max) * 100)}%'),
-        ("Dishes", str(state.resources.dish_count)),
-        ("Inside Temp", f"{state.env.inside_temp:.1f}°F"),
-        ("A/C Mode", state.env.ac_mode.upper()),
-        ("A/C Status", state.env.ac_state.upper()),
+        ("Dishes", f'{int((state.resources.dish_count / state.resources.dish_max) * 100)}%')
     ]

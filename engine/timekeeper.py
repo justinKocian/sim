@@ -4,6 +4,8 @@
 from engine.config import INGAME_MINUTES_PER_TICK, MONTHS, DAYS
 from engine.game_state import state
 
+WEEKDAY_INDEX_FOR_JAN_1_2000 = 6
+
 def advance_time(delta_seconds):
     """
     Advances the in-game clock by a fixed number of in-game minutes per tick.
@@ -33,14 +35,12 @@ def get_time_string():
     """
     return f"{state.time.hour:02}:{state.time.minute:02}"
 
-START_WEEKDAY_INDEX = 6  # Jan 1, 2000 was a Saturday → index 5
-
 def get_date_string():
     total_days = state.time.day - 1
     for m in range(state.time.month):
         total_days += MONTHS[m][1]
 
-    weekday_index = (START_WEEKDAY_INDEX + total_days) % 7
+    weekday_index = (WEEKDAY_INDEX_FOR_JAN_1_2000 + total_days) % 7
     weekday = DAYS[weekday_index]
     month_name = MONTHS[state.time.month][0]
 
