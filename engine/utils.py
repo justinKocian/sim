@@ -1,7 +1,7 @@
 # utils.py
 # Provides a basic logging function that writes entries to the game state.
 
-from game_state import state
+from engine.game_state import state
 
 # Supported log levels
 LOG_LEVELS = ["info", "debug"]

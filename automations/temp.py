@@ -1,8 +1,8 @@
 # automations/temp.py
 
 from automations import automation
-from game_state import state
-from utils import log
+from engine.game_state import state
+from engine.utils import log
 import math
 
 @automation

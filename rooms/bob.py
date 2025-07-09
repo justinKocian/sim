@@ -1,7 +1,7 @@
 # bob.py
 # Defines info panel content for the Bob tab.
 
-from game_state import state
+from engine.game_state import state
 
 def get_buttons():
     """

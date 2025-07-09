@@ -4,9 +4,9 @@
 
 import pygame
 import sys
-from config import *
-from game_state import state
-from ui import (
+from engine.config import *
+from engine.game_state import state
+from engine.ui import (
     draw_main_menu,
     draw_button_grid,
     draw_info_panel,
@@ -15,10 +15,10 @@ from ui import (
     draw_key_hints,
     draw_time_panel
 )
-from timekeeper import advance_time
-from scheduler import setup_events, check_events
+from engine.timekeeper import advance_time
+from engine.scheduler import setup_events, check_events
 from automations import register_all_automations, run_automations
-from room_manager import get_info_panel, get_buttons
+from engine.room_manager import get_info_panel, get_buttons
 
 # Schedule all predefined game events
 setup_events()

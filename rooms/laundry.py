@@ -1,9 +1,9 @@
 # laundry.py
 # Defines buttons and info panel data for the "Laundry" room/tab.
 
-from game_state import state
-from utils import log
-from ui_components import UIButton
+from engine.game_state import state
+from engine.utils import log
+from engine.ui_components import UIButton
 
 def try_start_laundry():
     state.rooms.laundry_running = True

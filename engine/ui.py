@@ -4,10 +4,10 @@
 import pygame
 from dataclasses import dataclass
 from typing import Callable
-from config import *
-from game_state import state
-from timekeeper import get_time_string, get_date_string
-from room_manager import get_buttons, get_info_panel
+from engine.config import *
+from engine.game_state import state
+from engine.timekeeper import get_time_string, get_date_string
+from engine.room_manager import get_buttons, get_info_panel
 
 # --- UI Button Structure ---
 

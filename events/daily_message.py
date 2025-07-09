@@ -1,10 +1,10 @@
 # events/daily_message.py
-from scheduler import get_weekday_index
+from engine.scheduler import get_weekday_index
 
-from scheduler import every_day_at
-from utils import log
-from game_state import state
-from config import DAYS
+from engine.scheduler import every_day_at
+from engine.utils import log
+from engine.game_state import state
+from engine.config import DAYS
 
 @every_day_at(hour=0, minute=0, label="Daily Greeting")
 def daily_greeting():

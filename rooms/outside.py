@@ -1,9 +1,9 @@
 # outside.py
 # Defines buttons and info panel data for the "Outside" room/tab.
 
-from game_state import state
-from utils import log
-from ui_components import UIButton
+from engine.game_state import state
+from engine.utils import log
+from engine.ui_components import UIButton
 
 def try_lock_door():
     state.rooms.door_locked = not state.rooms.door_locked

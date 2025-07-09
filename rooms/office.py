@@ -1,9 +1,9 @@
 # office.py
 # Defines buttons and info panel data for the "Office" room/tab.
 
-from game_state import state
-from utils import log
-from ui_components import UIButton
+from engine.game_state import state
+from engine.utils import log
+from engine.ui_components import UIButton
 
 def try_toggle_light():
     state.lights.office = not state.lights.office

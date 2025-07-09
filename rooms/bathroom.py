@@ -1,9 +1,9 @@
 # bathroom.py
 # Defines buttons and info panel data for the "Bathroom" room/tab.
 
-from game_state import state
-from utils import log
-from ui_components import UIButton
+from engine.game_state import state
+from engine.utils import log
+from engine.ui_components import UIButton
 
 # --- Action Helpers ---
 

@@ -2,7 +2,7 @@
 # Defines info panel content for the Log tab.
 # This tab displays system messages but does not include interactive buttons.
 
-from game_state import state
+from engine.game_state import state
 
 def get_buttons():
     """

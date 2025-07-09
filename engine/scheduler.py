@@ -1,9 +1,9 @@
 # scheduler.py
 # Handles time-based scheduling and execution of in-game events
 
-from game_state import state
-from config import MONTHS
-from utils import log
+from engine.game_state import state
+from engine.config import MONTHS
+from engine.utils import log
 from typing import Callable
 
 event_queue = []

@@ -1,8 +1,8 @@
 # timekeeper.py
 # Handles in-game time progression and date/time formatting
 
-from config import INGAME_MINUTES_PER_TICK, MONTHS, DAYS
-from game_state import state
+from engine.config import INGAME_MINUTES_PER_TICK, MONTHS, DAYS
+from engine.game_state import state
 
 def advance_time(delta_seconds):
     """
