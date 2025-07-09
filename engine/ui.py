@@ -2,6 +2,7 @@
 # Handles all screen rendering: buttons, info panels, borders, menus, and key hints.
 
 import pygame
+import time
 from dataclasses import dataclass
 from typing import Callable
 from engine.config import *
@@ -114,15 +115,17 @@ def draw_button(screen, i, x, y, btn: UIButton):
         "toggle_off_selected_bg": (50, 50, 80),
         "toggle_off_selected_fg": (200, 200, 255),
 
-        "selected_bg": (40, 40, 80),
-        "selected_fg": (240, 240, 255),
+        "selected_bg": (50, 50, 100),
+        "selected_fg": (255, 255, 255),
 
         "default_bg": (20, 20, 20),
         "default_fg": (200, 200, 200),
 
         "border": (80, 80, 80),
+        "shadow": (10, 10, 10),
     }
 
+    # Determine visual style
     if not enabled and selected:
         bg = COLORS["disabled_selected_bg"]
         fg = COLORS["disabled_selected_fg"]
@@ -148,11 +151,19 @@ def draw_button(screen, i, x, y, btn: UIButton):
         bg = COLORS["default_bg"]
         fg = COLORS["default_fg"]
 
+    # Drop shadow
+    pygame.draw.rect(screen, COLORS["shadow"], (x + 2, y + 2, BTN_WIDTH, BTN_HEIGHT))
+
+    # Button box
     pygame.draw.rect(screen, bg, (x, y, BTN_WIDTH, BTN_HEIGHT))
     pygame.draw.rect(screen, COLORS["border"], (x, y, BTN_WIDTH, BTN_HEIGHT), 2)
 
+    # Pressed effect: slight label offset
+    offset_x = 1 if selected else 0
+    offset_y = 1 if selected else 0
+
     label_surface = FONT.render(btn.label, True, fg)
-    label_rect = label_surface.get_rect(center=(x + BTN_WIDTH // 2, y + BTN_HEIGHT // 2))
+    label_rect = label_surface.get_rect(center=(x + BTN_WIDTH // 2 + offset_x, y + BTN_HEIGHT // 2 + offset_y))
     screen.blit(label_surface, label_rect)
 
 # --- Log Panel ---
@@ -219,10 +230,41 @@ def draw_tabs(screen):
 
 # --- Main Menu ---
 
+import time
+
 def draw_main_menu(screen):
+    """Draws the main menu with retro-style borders, shading, and blinking prompt."""
     screen.fill(BG_COLOR)
-    draw_centered(screen, "HOUSE SIM", 240)
-    draw_centered(screen, "Press ENTER to Start", 280)
+
+    # Outer screen border
+    border_rect = pygame.Rect(BORDER_PAD, BORDER_PAD, SCREEN_WIDTH - 2 * BORDER_PAD, SCREEN_HEIGHT - 2 * BORDER_PAD)
+    pygame.draw.rect(screen, SECTION_BORDER_COLOR, border_rect, 2)
+
+    # Title box with background fill and border
+    title_box = pygame.Rect(100, 180, SCREEN_WIDTH - 200, 140)
+    pygame.draw.rect(screen, (20, 20, 30), title_box)  # Shaded background
+    pygame.draw.rect(screen, SECTION_BORDER_COLOR, title_box, 2)
+
+    # Custom title font
+    title_font = pygame.font.SysFont(FONT_NAME, FONT_SIZE + 6)
+
+    # Drop shadow (optional)
+    title_surface_shadow = title_font.render("TIMEKEEPER", True, (0, 0, 0))
+    title_surface = title_font.render("TIMEKEEPER", True, (240, 240, 255))
+    title_rect = title_surface.get_rect(center=(SCREEN_WIDTH // 2, title_box.top + 40))
+    screen.blit(title_surface_shadow, (title_rect.x + 1, title_rect.y + 1))
+    screen.blit(title_surface, title_rect)
+
+    # Blinking "Press ENTER to Start"
+    if int(time.time() * 2) % 2 == 0:
+        draw_centered(screen, "Press [ENTER] to Start", title_box.top + 90, color=(200, 200, 200))
+
+    # Footer credits box
+    footer_box = pygame.Rect(80, SCREEN_HEIGHT - 80, SCREEN_WIDTH - 160, 40)
+    pygame.draw.rect(screen, (20, 20, 30), footer_box)
+    pygame.draw.rect(screen, SECTION_BORDER_COLOR, footer_box, 2)
+    draw_centered(screen, "Music by Elektrobear (moonanagames on itch.io)", footer_box.top + 17, color=(100, 100, 100))
+
     pygame.display.flip()
 
 # --- Key Hint Overlay ---

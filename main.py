@@ -6,6 +6,7 @@ import pygame
 import sys
 from engine.config import *
 from engine.game_state import state
+from engine.audio import AudioController
 from engine.ui import (
     draw_main_menu,
     draw_button_grid,
@@ -79,6 +80,10 @@ def handle_game_input(event):
 
 def main():
     global tick_accumulator
+
+    # Initialize audio system
+    audio = AudioController()
+    audio.play_music("assets\music\music_bleepinblooper.ogg")
 
     while True:
         delta_ms = clock.tick(FPS)
