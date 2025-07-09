@@ -72,48 +72,6 @@ def set_ac_mode(mode):
 def get_buttons():
     return [
         UIButton(
-            label="Toggle Light",
-            type="toggle",
-            enabled=lambda: True,
-            get=lambda: state.lights.kitchen,
-            action=toggle_light
-        ),
-        UIButton(
-            label="Cook",
-            type="action",
-            enabled=lambda: True,
-            get=lambda: False,
-            action=try_cook
-        ),
-        UIButton(
-            label="Eat",
-            type="action",
-            enabled=lambda: True,
-            get=lambda: False,
-            action=try_eat
-        ),
-        UIButton(
-            label="Drink",
-            type="action",
-            enabled=lambda: True,
-            get=lambda: False,
-            action=try_drink
-        ),
-        UIButton(
-            label="Empty Trash",
-            type="action",
-            enabled=lambda: True,
-            get=lambda: False,
-            action=try_empty_trash
-        ),
-        UIButton(
-            label="Wash Dishes",
-            type="action",
-            enabled=lambda: True,
-            get=lambda: False,
-            action=try_wash_dishes
-        ),
-        UIButton(
             label="A/C: Off",
             type="action",
             enabled=lambda: state.env.ac_mode != "off",
@@ -140,11 +98,6 @@ def get_buttons():
 
 def get_info():
     return [
-        ("Light", "ON" if state.lights.kitchen else "OFF"),
-        ("Ingredients", "Available" if state.resources.food_count > 0 else "Missing"),
-        ("Food", str(state.resources.cooked_count)),
-        ("Trash", f'{int((state.resources.trash_level / state.resources.trash_max) * 100)}%'),
-        ("Dishes", str(state.resources.dish_count)),
         ("Inside Temp", f"{state.env.inside_temp:.1f}°F"),
         ("A/C Mode", state.env.ac_mode.upper()),
         ("A/C Status", state.env.ac_state.upper()),

@@ -12,7 +12,20 @@ BTN_WIDTH = 140                                                                 
 BTN_HEIGHT = 35                                                                     # Button height in pixels
 PADDING = 24                                                                        # Padding between buttons/components
 COLS = 3                                                                            # Number of columns in button grid
-TABS = ["outside", "kitchen", "bathroom", "laundry", "office", "log", "bedroom"]    # Tab labels
+TABS = [                                                                            # Tab labels
+    # First Row
+    "outside",
+    "kitchen",
+    "bathroom",
+    "laundry",
+    "office",
+    "bedroom",
+    
+    # Second Row
+    "home",
+    "log",
+    "bob"
+    ]
 FPS = 60                                                                            # Target frames per second
 
 # Font settings
@@ -20,7 +33,7 @@ FONT_NAME = "Courier New"                          # Retro-style font name
 FONT_SIZE = 16                                     # Font size in points
 
 # Info/log panel configuration
-INFO_LINES_PER_PAGE = 8                            # Number of info lines per page in info panel
+INFO_LINES_PER_PAGE = 12                           # Number of info lines per page in info panel
 LOG_LINES = 8                                      # Number of log lines shown at once
 
 # UI style and colors

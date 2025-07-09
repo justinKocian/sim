@@ -22,7 +22,5 @@ def get_buttons():
 
 def get_info():
     return [
-        ("Energy", str(state.rooms.energy)),
-        ("Knowledge", str(state.rooms.knowledge)),
-        ("Progress", f"{state.rooms.progress}%")
+        ("Light", "ON" if state.lights.office else "OFF")
     ]

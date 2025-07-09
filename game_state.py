@@ -13,6 +13,12 @@ class Environment:
     ac_target: float = 72.0   # Desired temp in auto mode
 
 @dataclass
+class Needs:
+    hunger: int = 10
+    thirst: int = 10
+    energy_level: int = 0
+
+@dataclass
 class Resources:
     food_count: int = 10
     cooked_count: int = 0
@@ -35,11 +41,7 @@ class RoomStates:
     door_locked: bool = True
     laundry_running: bool = False
     mail_checked: bool = False
-    cleanliness: int = 50
-    energy: int = 100
-    knowledge: int = 0
-    progress: int = 0
-
+    
 @dataclass
 class InfoPageState:
     pages: Dict[str, int] = field(default_factory=lambda: {
@@ -69,13 +71,12 @@ class GameState:
     needs_redraw: bool = True
     
     env: Environment = field(default_factory=Environment)
-
-
     resources: Resources = field(default_factory=Resources)
     lights: Lights = field(default_factory=Lights)
     rooms: RoomStates = field(default_factory=RoomStates)
     info_page: InfoPageState = field(default_factory=InfoPageState)
     time: TimeState = field(default_factory=TimeState)
+    needs: Needs = field(default_factory=Needs)
 
     log_entries: List[str] = field(default_factory=list)
     debug_mode: bool = False

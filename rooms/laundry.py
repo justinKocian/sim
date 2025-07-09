@@ -33,6 +33,5 @@ def get_buttons():
 
 def get_info():
     return [
-        ("Laundry", "RUNNING" if state.rooms.laundry_running else "IDLE"),
-        ("Basket", "Full" if state.rooms.progress > 0 else "Empty")  # placeholder logic
+        ("Laundry", "RUNNING" if state.rooms.laundry_running else "IDLE")
     ]

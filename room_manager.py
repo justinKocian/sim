@@ -9,6 +9,8 @@ from rooms.laundry import get_buttons as get_laundry_buttons, get_info as get_la
 from rooms.office import get_buttons as get_office_buttons, get_info as get_office_info
 from rooms.log import get_buttons as get_log_buttons, get_info as get_log_info
 from rooms.bedroom import get_buttons as get_bedroom_buttons, get_info as get_bedroom_info
+from rooms.bob import get_buttons as get_bob_buttons, get_info as get_bob_info
+from rooms.home import get_buttons as get_home_buttons, get_info as get_home_info
 
 # Mapping of tab names to their corresponding button generation functions
 BUTTON_GETTERS = {
@@ -18,7 +20,9 @@ BUTTON_GETTERS = {
     "laundry": get_laundry_buttons,
     "office": get_office_buttons,
     "log": get_log_buttons,
-    "bedroom": get_bedroom_buttons
+    "bedroom": get_bedroom_buttons,
+    "bob": get_bob_buttons,
+    "home": get_home_buttons
 }
 
 # Mapping of tab names to their corresponding info panel data functions
@@ -29,7 +33,9 @@ INFO_GETTERS = {
     "laundry": get_laundry_info,
     "office": get_office_info,
     "log": get_log_info,
-    "bedroom": get_bedroom_info
+    "bedroom": get_bedroom_info,
+    "bob": get_bob_info,
+    "home": get_home_info
 }
 
 def get_buttons(tab):

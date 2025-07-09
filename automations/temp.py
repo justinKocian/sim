@@ -2,6 +2,7 @@
 
 from automations import automation
 from game_state import state
+from utils import log
 import math
 
 @automation
@@ -25,8 +26,10 @@ def update_inside_temperature():
     # Apply A/C effect
     if env.ac_state == "cooling":
         env.inside_temp -= influence
+        log("A/C Cooling", level= "debug")
     elif env.ac_state == "heating":
         env.inside_temp += influence
+        log("A/C Heating", level="debug")
 
     env.inside_temp = round(env.inside_temp, 1)
 
