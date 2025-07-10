@@ -103,8 +103,8 @@ def main():
     global tick_accumulator
 
     # Initialize audio system
-    audio = AudioController()
-    audio.play_music("assets\music\music_bleepinblooper.ogg")
+    #audio = AudioController()
+    #audio.play_music("assets\music\music_bleepinblooper.ogg")
 
     while True:
         delta_ms = clock.tick(FPS)

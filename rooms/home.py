@@ -1,5 +1,5 @@
 # kitchen.py
-# Defines buttons and info panel data for the "Kitchen" room/tab.
+# Defines buttons and info panel data for the "Home" room/tab.
 
 from engine.game_state import state
 from engine.utils import log
@@ -24,13 +24,33 @@ def try_order_food():
         show_modal("Not enough money to order food.")
         log("Tried to order food, but not enough money.", level="info")
         return False
+    
+def try_ac_up():
+    state.env.ac_target += 1
+
+def try_ac_down():
+    state.env.ac_target -= 1
 
 # --- Button Definitions ---
 
 def get_buttons():
     return [
         UIButton(
-            label="Order Food",
+            label="A/C Up",
+            type="action",
+            enabled=lambda: True,
+            get=lambda: False,
+            action=try_ac_up
+        ),
+        UIButton(
+            label="A/C Down",
+            type="action",
+            enabled=lambda: True,
+            get=lambda: False,
+            action=try_ac_down
+        ),
+        UIButton(
+            label="A/C Up",
             type="action",
             enabled=lambda: state.resources.money >= 10,
             get=lambda: False,
@@ -66,4 +86,5 @@ def get_info():
         ("Inside Temp", f"{state.env.inside_temp:.1f}°F"),
         ("A/C Mode", state.env.ac_mode.upper()),
         ("A/C Status", state.env.ac_state.upper()),
+        ("A/C Target Temp", state.env.ac_target)
     ]
