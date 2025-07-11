@@ -20,7 +20,7 @@ MAX_TAB_ROWS = 2
 TAB_AREA_HEIGHT = 60 + MAX_TAB_ROWS * TAB_ROW_HEIGHT
 BUTTON_GRID_TOP = TAB_AREA_HEIGHT + 20
 INFO_PANEL_TOP = TAB_AREA_HEIGHT + 250
-COLS = 3
+COLS = 3 # This doesn't work anymore and I'm not sure why... so I'll just leave it at 3
 
 def scale(value, axis='x'):
     return int(value * (scale_x if axis == 'x' else scale_y))
