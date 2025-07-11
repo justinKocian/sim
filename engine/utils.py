@@ -1,6 +1,7 @@
 # utils.py
 # Provides a basic logging function and shake utility using predefined profiles.
 
+import math
 from engine.game_state import state
 
 # Supported log levels
@@ -41,3 +42,18 @@ def trigger_shake(profile="medium"):
     p = SHAKE_PROFILES.get(profile, SHAKE_PROFILES["medium"])
     state.screen_shake.trigger(duration=p["duration"], intensity=p["intensity"])
     log(f"Triggered screen shake: {profile}", level="debug")
+
+def pulse_brightness(color, frame_count, speed=6, scale_range=(0.5, 1.0)):
+    """
+    Returns a pulsing version of a given color.
+
+    Parameters:
+        color (tuple): Base (R, G, B)
+        frame_count (int): The current frame or tick count
+        speed (int): How fast the pulse oscillates (lower = faster)
+        scale_range (tuple): Min/max brightness scale
+    """
+    min_scale, max_scale = scale_range
+    wave = math.sin(frame_count / speed)
+    scale = min_scale + (max_scale - min_scale) * ((wave + 1) / 2)  # Normalize to 0–1
+    return tuple(min(255, max(0, int(c * scale))) for c in color)

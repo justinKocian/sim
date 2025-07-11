@@ -6,13 +6,14 @@ from engine.utils import log
 from engine.ui_components import UIButton
 from engine.ui_components import show_modal
 
+# --- Action Helpers ---
+
 def try_toggle_light():
     state.lights.office = not state.lights.office
     log("Toggled kitchen light", level="info")
 
 def test_modal():
     show_modal("This is a test pop-up modal.")
-
 
 def get_buttons():
     return [

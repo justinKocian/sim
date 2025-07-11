@@ -28,6 +28,9 @@ setup_events()
 # Register all automation modules and their decorators
 register_all_automations()
 
+# Setting up blinking text and stuff
+frame_counter = 0
+
 # Initialize Pygame and setup window
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -100,7 +103,9 @@ def handle_game_input(event):
         state.info_page.pages[tab] = (current + 1) % total
 
 def main():
-    global tick_accumulator
+    global tick_accumulator, frame_counter
+
+    frame_counter = 0  # Add frame counter for pulsing effects
 
     # Initialize audio system
     # audio = AudioController()
@@ -143,8 +148,9 @@ def main():
 
         # Draw screen
         if not state.game_started:
-            draw_main_menu(screen)
+            draw_main_menu(screen, frame_counter)
             pygame.display.flip()
+            frame_counter += 1
             continue
 
         if getattr(state, "needs_redraw", True):
@@ -166,6 +172,8 @@ def main():
             pygame.display.flip()
 
             state.needs_redraw = False
+
+        frame_counter += 1
 
 # Entry point
 if __name__ == "__main__":

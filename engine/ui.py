@@ -223,8 +223,10 @@ def draw_tabs(screen):
 
 import time
 
-def draw_main_menu(screen):
-    """Draws the main menu with retro-style borders, shading, and blinking prompt."""
+from engine.utils import pulse_brightness  # at top of ui.py
+
+def draw_main_menu(screen, frame_counter):
+    """Draws the main menu with retro-style borders, shading, and pulsing prompt."""
     screen.fill(BG_COLOR)
 
     # Outer screen border
@@ -233,30 +235,26 @@ def draw_main_menu(screen):
 
     # Title box with background fill and border
     title_box = pygame.Rect(100, 180, SCREEN_WIDTH - 200, 140)
-    pygame.draw.rect(screen, (20, 20, 30), title_box)  # Shaded background
+    pygame.draw.rect(screen, (20, 20, 30), title_box)
     pygame.draw.rect(screen, SECTION_BORDER_COLOR, title_box, 2)
 
-    # Custom title font
+    # Title text with drop shadow
     title_font = pygame.font.SysFont(FONT_NAME, FONT_SIZE + 6)
-
-    # Drop shadow (optional)
     title_surface_shadow = title_font.render("TIMEKEEPER", True, (0, 0, 0))
     title_surface = title_font.render("TIMEKEEPER", True, (240, 240, 255))
     title_rect = title_surface.get_rect(center=(SCREEN_WIDTH // 2, title_box.top + 40))
     screen.blit(title_surface_shadow, (title_rect.x + 1, title_rect.y + 1))
     screen.blit(title_surface, title_rect)
 
-    # Blinking "Press ENTER to Start"
-    if int(time.time() * 2) % 2 == 0:
-        draw_centered(screen, "Press [ENTER] to Start", title_box.top + 90, color=(200, 200, 200))
+    # Pulsing prompt
+    pulse_color = pulse_brightness((200, 200, 200), frame_counter)
+    draw_centered(screen, "Press [ENTER] to Start", title_box.top + 90, color=pulse_color)
 
-    # Footer credits box
+    # Footer credits
     footer_box = pygame.Rect(80, SCREEN_HEIGHT - 80, SCREEN_WIDTH - 160, 40)
     pygame.draw.rect(screen, (20, 20, 30), footer_box)
     pygame.draw.rect(screen, SECTION_BORDER_COLOR, footer_box, 2)
     draw_centered(screen, "Music by Elektrobear (moonanagames on itch.io)", footer_box.top + 17, color=(100, 100, 100))
-
-    pygame.display.flip()
 
 # --- Key Hint Overlay ---
 
