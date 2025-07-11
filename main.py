@@ -104,31 +104,41 @@ def handle_game_input(event):
 
 def main():
     global tick_accumulator, frame_counter
+    frame_counter = 0
+    tick_accumulator = 0
 
-    frame_counter = 0  # Add frame counter for pulsing effects
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+    pygame.display.set_caption("Retro Home Sim")
+    clock = pygame.time.Clock()
 
-    # Initialize audio system
-    # audio = AudioController()
-    # audio.play_music("assets/music/music_bleepinblooper.ogg")
+    from engine.scheduler import setup_events, check_events
+    from automations import register_all_automations, run_automations
+    from engine.ui import (
+        draw_main_menu, draw_button_grid, draw_info_panel,
+        draw_tabs, draw_borders, draw_key_hints,
+        draw_time_panel, draw_modal
+    )
+    from engine.room_manager import get_info_panel, get_buttons
+    from engine.config import FPS, BG_COLOR
+    from engine.game_state import state
+
+    setup_events()
+    register_all_automations()
+    state.needs_redraw = True
 
     while True:
         delta_ms = clock.tick(FPS)
         delta_sec = delta_ms / 1000.0
         tick_accumulator += delta_sec
 
-        # Always update shake every frame
         state.screen_shake.update(delta_sec)
-
-        # Force redraw while shaking
         if state.screen_shake.get_offset() != (0, 0):
             state.needs_redraw = True
 
-        # Process input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
+                pygame.quit(); sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if not state.game_started:
                     if event.key == pygame.K_RETURN:
@@ -137,7 +147,6 @@ def main():
                 else:
                     handle_game_input(event)
 
-        # Time + automation
         if state.game_started:
             while tick_accumulator >= REAL_SECONDS_PER_TICK:
                 advance_time(REAL_SECONDS_PER_TICK)
@@ -146,7 +155,6 @@ def main():
                 state.needs_redraw = True
                 tick_accumulator -= REAL_SECONDS_PER_TICK
 
-        # Draw screen
         if not state.game_started:
             draw_main_menu(screen, frame_counter)
             pygame.display.flip()
@@ -155,7 +163,6 @@ def main():
 
         if getattr(state, "needs_redraw", True):
             offset_x, offset_y = state.screen_shake.get_offset()
-
             render_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
             render_surface.fill(BG_COLOR)
 
@@ -170,7 +177,6 @@ def main():
             screen.fill(BG_COLOR)
             screen.blit(render_surface, (offset_x, offset_y))
             pygame.display.flip()
-
             state.needs_redraw = False
 
         frame_counter += 1

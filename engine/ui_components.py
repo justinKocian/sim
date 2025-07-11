@@ -1,3 +1,5 @@
+# ui_components.py
+
 from dataclasses import dataclass
 from typing import Callable
 from engine.game_state import state
