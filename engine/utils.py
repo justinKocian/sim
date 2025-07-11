@@ -1,5 +1,5 @@
 # utils.py
-# Provides a basic logging function that writes entries to the game state.
+# Provides a basic logging function and shake utility using predefined profiles.
 
 from engine.game_state import state
 
@@ -25,3 +25,19 @@ def log(message, level="info"):
     # Cap log history to 100 messages
     if len(state.log_entries) > 100:
         state.log_entries.pop(0)
+
+# Predefined shake profiles
+SHAKE_PROFILES = {
+    "light": {"duration": 0.2, "intensity": 3},
+    "medium": {"duration": 0.4, "intensity": 6},
+    "strong": {"duration": 0.6, "intensity": 10},
+}
+
+def trigger_shake(profile="medium"):
+    """
+    Triggers a screen shake using a predefined profile.
+    Available profiles: light, medium, strong.
+    """
+    p = SHAKE_PROFILES.get(profile, SHAKE_PROFILES["medium"])
+    state.screen_shake.trigger(duration=p["duration"], intensity=p["intensity"])
+    log(f"Triggered screen shake: {profile}", level="debug")

@@ -103,15 +103,22 @@ def main():
     global tick_accumulator
 
     # Initialize audio system
-    #audio = AudioController()
-    #audio.play_music("assets\music\music_bleepinblooper.ogg")
+    # audio = AudioController()
+    # audio.play_music("assets/music/music_bleepinblooper.ogg")
 
     while True:
         delta_ms = clock.tick(FPS)
         delta_sec = delta_ms / 1000.0
         tick_accumulator += delta_sec
 
-        # Process input first
+        # Always update shake every frame
+        state.screen_shake.update(delta_sec)
+
+        # Force redraw while shaking
+        if state.screen_shake.get_offset() != (0, 0):
+            state.needs_redraw = True
+
+        # Process input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -125,7 +132,7 @@ def main():
                 else:
                     handle_game_input(event)
 
-        # Advance game time regardless of input
+        # Time + automation
         if state.game_started:
             while tick_accumulator >= REAL_SECONDS_PER_TICK:
                 advance_time(REAL_SECONDS_PER_TICK)
@@ -134,22 +141,30 @@ def main():
                 state.needs_redraw = True
                 tick_accumulator -= REAL_SECONDS_PER_TICK
 
-        # Draw main menu or game screen
+        # Draw screen
         if not state.game_started:
             draw_main_menu(screen)
             pygame.display.flip()
             continue
 
-        if getattr(state, "needs_redraw", True):  # ← key change to ensure default True
+        if getattr(state, "needs_redraw", True):
+            offset_x, offset_y = state.screen_shake.get_offset()
+
+            render_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+            render_surface.fill(BG_COLOR)
+
+            draw_time_panel(render_surface)
+            draw_borders(render_surface)
+            draw_tabs(render_surface)
+            draw_button_grid(render_surface)
+            draw_info_panel(render_surface)
+            draw_key_hints(render_surface)
+            draw_modal(render_surface)
+
             screen.fill(BG_COLOR)
-            draw_time_panel(screen)
-            draw_borders(screen)
-            draw_tabs(screen)
-            draw_button_grid(screen)
-            draw_info_panel(screen)
-            draw_key_hints(screen)
-            draw_modal(screen)
+            screen.blit(render_surface, (offset_x, offset_y))
             pygame.display.flip()
+
             state.needs_redraw = False
 
 # Entry point

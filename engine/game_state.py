@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass, field
 from typing import Dict, List, Callable
+from engine.screen_shake import ScreenShake
 
 @dataclass
 class Environment:
@@ -43,7 +44,7 @@ class RoomStates:
     door_locked: bool = True
     laundry_running: bool = False
     mail_checked: bool = False
-    
+
 @dataclass
 class InfoPageState:
     pages: Dict[str, int] = field(default_factory=lambda: {
@@ -78,7 +79,7 @@ class GameState:
     sel_index: int = 0
     needs_redraw: bool = True
     modal: ModalState = field(default_factory=ModalState)
-    
+
     env: Environment = field(default_factory=Environment)
     resources: Resources = field(default_factory=Resources)
     lights: Lights = field(default_factory=Lights)
@@ -86,6 +87,7 @@ class GameState:
     info_page: InfoPageState = field(default_factory=InfoPageState)
     time: TimeState = field(default_factory=TimeState)
     needs: Needs = field(default_factory=Needs)
+    screen_shake: ScreenShake = field(default_factory=ScreenShake)
 
     log_entries: List[str] = field(default_factory=list)
     debug_mode: bool = False

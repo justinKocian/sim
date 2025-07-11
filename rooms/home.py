@@ -2,7 +2,7 @@
 # Defines buttons and info panel data for the "Home" room/tab.
 
 from engine.game_state import state
-from engine.utils import log
+from engine.utils import log, trigger_shake
 from engine.ui_components import UIButton, show_modal
 
 # --- Action Helpers ---
@@ -12,6 +12,9 @@ def set_ac_mode(mode):
         state.env.ac_mode = mode
         if mode == "off":
             state.env.ac_state = "off"
+
+def try_screen_shake(prof):
+    trigger_shake(profile = prof)
 
 def try_order_food():
     cost = 10
@@ -35,6 +38,13 @@ def try_ac_down():
 
 def get_buttons():
     return [
+        UIButton(
+            label="Order Food",
+            type="action",
+            enabled=lambda: True,
+            get=lambda: False,
+            action=try_order_food
+        ),
         UIButton(
             label="A/C Up",
             type="action",
@@ -77,6 +87,13 @@ def get_buttons():
             get=lambda: state.env.ac_mode == "auto",
             action=lambda: set_ac_mode("auto")
         ),
+        UIButton(
+            label="Test Shake",
+            type="action",
+            enabled=lambda: True,
+            get=lambda: False,
+            action=lambda: try_screen_shake("light")
+        )
     ]
 
 # --- Info Panel ---
